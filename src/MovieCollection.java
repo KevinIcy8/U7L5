@@ -321,7 +321,10 @@ public class MovieCollection
     {
         ArrayList<String> indvGenre = new ArrayList<String>();
         for(int i = 0; i < movies.size(); i++){
-            indvGenre.add(movies.get(i).getGenres());
+            String[] genres = movies.get(i).getGenres().split("\\|");
+            for(int j = 0; j < genres.length; j++){
+                indvGenre.add(genres[j]);
+            }
         }
         sortAlphabetically(indvGenre);
         for(int i = 0; i < indvGenre.size()-1; i++){
@@ -347,7 +350,7 @@ public class MovieCollection
 
         for (int i = 0; i < movies.size(); i++){
             String movieGenre = movies.get(i).getGenres();
-            movieGenre = movieGenre.toLowerCase();
+            //movieGenre = movieGenre.toLowerCase();
             if(movieGenre.contains(indvGenre.get(choiceGenre - 1))){
                results.add(movies.get(i));
             }
@@ -383,7 +386,35 @@ public class MovieCollection
 
     private void listHighestRated()
     {
+        String[] top50Rated = new String[50];
+        Double[] ratings = new Double[50];
+        for(int j = 0; j < top50Rated.length; j++){
+            ratings[j] = movies.get(j).getUserRating();
 
+        }
+        Arrays.sort(ratings, Collections.reverseOrder());
+        for (int i = 50; i < movies.size(); i++){
+            double movieRating = movies.get(i).getUserRating();
+            if(ratings[ratings.length-1] < movieRating){
+                ratings[ratings.length-1] = movieRating;
+                Arrays.sort(ratings, Collections.reverseOrder());
+            }
+        }
+        int index = 0;
+        for(int i = 0; i < movies.size(); i++){
+            double movieRating = movies.get(i).getUserRating();
+            if(index < 50){
+                if(ratings[index] == movieRating){
+                    top50Rated[index] = movies.get(i).getTitle() + ": " + movies.get(i).getUserRating();
+                    index++;
+                    if(!ratings[index].equals(ratings[index + 1])){
+                        i = 0;
+                    }
+                }
+            }
+        }
+        System.out.println(Arrays.toString(ratings));
+        System.out.println(Arrays.toString(top50Rated));
     }
 
     private void listHighestRevenue()
